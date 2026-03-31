@@ -1,0 +1,22 @@
+.container {
+    padding: 1rem;
+}
+
+.title {
+    margin-bottom: 2rem;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.invoiceList {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.invoiceWrapper {
+    border: 1px solid var(--border);
+    padding: 1rem;
+    border-radius: 12px;
+    background: var(--card);
+}

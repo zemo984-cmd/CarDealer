@@ -1,0 +1,114 @@
+.invoiceContainer {
+    background: var(--card);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    color: var(--card-foreground);
+    max-width: 800px;
+    margin: 20px auto;
+    font-family: 'Inter', sans-serif;
+    border: 1px solid var(--border);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 32px;
+    margin: 0;
+    color: var(--foreground);
+}
+
+.companyInfo {
+    text-align: right;
+}
+
+.companyInfo h2 {
+    margin: 0;
+    color: #2563eb;
+}
+
+.divider {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: 20px 0;
+}
+
+.billingInfo {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+.table th {
+    text-align: left;
+    padding: 12px;
+    background: var(--muted);
+    border-bottom: 2px solid var(--border);
+    color: var(--muted-foreground);
+}
+
+.table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.textRight {
+    text-align: right;
+}
+
+.summary {
+    margin-left: auto;
+    width: 300px;
+}
+
+.summaryRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+}
+
+.totalRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-top: 2px solid #2563eb;
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #2563eb;
+}
+
+.footer {
+    margin-top: 50px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted-foreground);
+}
+
+.unpaid {
+    color: #dc2626;
+    font-weight: bold;
+}
+
+.paid {
+    color: #16a34a;
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+    .billingInfo {
+        flex-direction: column;
+        gap: 20px;
+    }
+}

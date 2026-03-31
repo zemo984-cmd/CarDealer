@@ -1,0 +1,222 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model bill {
+  id             Int      @id @default(autoincrement())
+  bookingId      Int      @unique(map: "bookingId")
+  billDate       DateTime @default(now()) @db.DateTime(0)
+  totalAmount    Decimal
+  discountAmount Decimal  @default(0.000000000000000000000000000000)
+  taxAmount      Decimal  @default(0.000000000000000000000000000000)
+  advanceAmount  Decimal  @default(0.000000000000000000000000000000)
+  balanceAmount  Decimal
+  status         String   @default("Unpaid")
+  booking        booking  @relation(fields: [bookingId], references: [id], map: "Bill_bookingId_fkey")
+}
+
+model booking {
+  id                    Int            @id @default(autoincrement())
+  bookingDate           DateTime       @default(now()) @db.DateTime(0)
+  driveOption           String         @default("Self-Drive")
+  meterReading          Int
+  status                booking_status @default(PENDING)
+  amount                Decimal
+  securityDeposit       Decimal
+  securityPaymentStatus String         @default("Pending")
+  customerId            Int
+  carId                 Int
+  discountId            Int?
+  chauffeurId           Int?
+  bill                  bill?
+  car                   car            @relation(fields: [carId], references: [id], map: "Booking_carId_fkey")
+  chauffeur             chauffeur?     @relation(fields: [chauffeurId], references: [id], map: "Booking_chauffeurId_fkey")
+  user                  user           @relation(fields: [customerId], references: [id], map: "Booking_customerId_fkey")
+  discount              discount?      @relation(fields: [discountId], references: [id], map: "Booking_discountId_fkey")
+
+  @@index([carId], map: "Booking_carId_fkey")
+  @@index([chauffeurId], map: "Booking_chauffeurId_fkey")
+  @@index([customerId], map: "Booking_customerId_fkey")
+  @@index([discountId], map: "Booking_discountId_fkey")
+}
+
+model branch {
+  id      Int     @id @default(autoincrement())
+  name    String  @db.VarChar(255)
+  address String  @db.VarChar(255)
+  phone   String?
+  user    user[]
+}
+
+model car {
+  id           Int          @id @default(autoincrement())
+  make         String       @db.VarChar(255)
+  model        String       @db.VarChar(255)
+  year         Int
+  price        Decimal
+  regNumber    String       @unique(map: "regNumber")
+  mileage      Int?         @default(0)
+  meterReading Int?         @default(0)
+  condition    String
+  status       car_status   @default(AVAILABLE)
+  description  String?      @db.Text
+  images       String?      @db.Text
+  typeId       Int?
+  listingType  String       @default("SALE")
+  createdAt    DateTime     @default(now()) @db.DateTime(0)
+  updatedAt    DateTime     @default(now()) @db.DateTime(0)
+  booking      booking[]
+  vehicletype  vehicletype? @relation(fields: [typeId], references: [id], map: "Car_typeId_fkey")
+  order        order[]
+
+  @@index([typeId], map: "Car_typeId_fkey")
+}
+
+model chauffeur {
+  id            Int             @id @default(autoincrement())
+  name          String          @db.VarChar(255)
+  gender        String
+  dateOfBirth   DateTime        @db.DateTime(0)
+  occupation    String          @db.VarChar(255)
+  email         String          @unique(map: "email")
+  address       String          @db.VarChar(255)
+  status        String          @default("Active")
+  booking       booking[]
+  chauffeurbata chauffeurbata[]
+}
+
+model chauffeurbata {
+  id          Int       @id @default(autoincrement())
+  days        Int
+  dailyAmount Decimal
+  status      String    @default("Pending")
+  chauffeurId Int
+  chauffeur   chauffeur @relation(fields: [chauffeurId], references: [id], map: "ChauffeurBata_chauffeurId_fkey")
+
+  @@index([chauffeurId], map: "ChauffeurBata_chauffeurId_fkey")
+}
+
+model discount {
+  id           Int       @id @default(autoincrement())
+  amount       Decimal
+  customerType String
+  booking      booking[]
+}
+
+model invoice {
+  id       Int      @id @default(autoincrement())
+  orderId  Int      @unique(map: "orderId")
+  userId   Int
+  amount   Decimal
+  status   String
+  issuedAt DateTime @default(now()) @db.DateTime(0)
+  order    order    @relation(fields: [orderId], references: [id], onDelete: Cascade, map: "Invoice_orderId_fkey")
+  user     user     @relation(fields: [userId], references: [id], map: "Invoice_userId_fkey")
+
+  @@index([userId], map: "Invoice_userId_fkey")
+}
+
+model order {
+  id              Int          @id @default(autoincrement())
+  userId          Int
+  carId           Int
+  type            order_type
+  status          order_status @default(PENDING)
+  totalAmount     Decimal
+  installmentPlan String?
+  createdAt       DateTime     @default(now()) @db.DateTime(0)
+  updatedAt       DateTime     @default(now()) @db.DateTime(0)
+  invoice         invoice?
+  car             car          @relation(fields: [carId], references: [id], map: "Order_carId_fkey")
+  user            user         @relation(fields: [userId], references: [id], map: "Order_userId_fkey")
+
+  @@index([userId], map: "Order_userId_fkey")
+  @@index([carId], map: "Order_carId_fkey")
+}
+
+model tradeinrequest {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  carModel  String   @db.VarChar(255)
+  year      Int
+  condition String   @db.VarChar(255)
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now()) @db.DateTime(0)
+  user      user     @relation(fields: [userId], references: [id], map: "TradeInRequest_userId_fkey")
+
+  @@index([userId], map: "TradeInRequest_userId_fkey")
+}
+
+model user {
+  id               Int              @id @default(autoincrement())
+  email            String           @unique(map: "email")
+  password         String           @db.VarChar(255)
+  name             String?          @db.VarChar(255)
+  gender           String?
+  dateOfBirth      DateTime?        @db.DateTime(0)
+  occupation       String?          @db.VarChar(255)
+  address          String?          @db.VarChar(255)
+  role             user_role        @default(CLIENT)
+  status           String           @default("Active")
+  branchId         Int?
+  resetToken       String?          @db.VarChar(255)
+  resetTokenExpiry DateTime?        @db.DateTime(0)
+  createdAt        DateTime         @default(now()) @db.DateTime(0)
+  updatedAt        DateTime         @default(now()) @db.DateTime(0)
+  booking          booking[]
+  invoice          invoice[]
+  order            order[]
+  tradeinrequest   tradeinrequest[]
+  branch           branch?          @relation(fields: [branchId], references: [id], map: "User_branchId_fkey")
+
+  @@index([branchId], map: "User_branchId_fkey")
+}
+
+model vehicletype {
+  id              Int     @id @default(autoincrement())
+  typeName        String  @db.VarChar(255)
+  securityDeposit Decimal
+  costPerMile     Decimal
+  availability    Boolean @default(true)
+  car             car[]
+}
+
+enum order_type {
+  PURCHASE
+  BOOKING
+  INSTALLMENT
+  TRADE_IN
+}
+
+enum order_status {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+}
+
+enum booking_status {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum user_role {
+  CLIENT
+  ADMIN
+  EMPLOYEE
+}
+
+enum car_status {
+  AVAILABLE
+  BOOKED
+  MAINTENANCE
+  SOLD
+  RESERVED
+}

@@ -1,0 +1,38 @@
+.footer {
+    background-color: var(--card);
+    border-top: 1px solid var(--border);
+    padding: 3rem 0;
+    margin-top: auto;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+}
+
+.column h3,
+.column h4 {
+    margin-bottom: 1rem;
+    color: var(--foreground);
+}
+
+.column p {
+    color: var(--muted-foreground);
+    line-height: 1.5;
+}
+
+.column a {
+    display: block;
+    color: var(--muted-foreground);
+    margin-bottom: 0.5rem;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.column a:hover {
+    color: var(--primary);
+}

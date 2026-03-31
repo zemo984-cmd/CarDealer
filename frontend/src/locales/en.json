@@ -1,0 +1,72 @@
+{
+    "nav": {
+        "home": "Home",
+        "inventory": "Inventory",
+        "dashboard": "Dashboard",
+        "about": "About",
+        "contact": "Contact",
+        "login": "Login",
+        "logout": "Logout",
+        "back": "Back"
+    },
+    "hero": {
+        "title": "Find Your Dream Car Today",
+        "subtitle": "Browse our exclusive collection of premium vehicles. Quality, luxury, and performance guaranteed.",
+        "cta": "Browse Inventory"
+    },
+    "common": {
+        "loading": "Loading...",
+        "search": "Search",
+        "filter": "Filter",
+        "apply": "Apply",
+        "reset": "Reset",
+        "all_cars": "All Cars",
+        "overview": "Overview",
+        "cars": "Cars",
+        "customers": "Customers",
+        "chauffeurs": "Chauffeurs",
+        "sales": "Sales",
+        "billing": "Billing",
+        "branches": "Branches",
+        "discounts": "Discounts",
+        "settings": "Settings",
+        "send": "Send Message"
+    },
+    "about": {
+        "title": "About AutoMotive",
+        "description1": "Welcome to AutoMotive, your premier destination for luxury and performance vehicles. We have been serving our community for over 10 years, providing top-quality cars and exceptional customer service.",
+        "description2": "Our mission is to make the car buying process as smooth and enjoyable as possible. Whether you are looking for a sleek sedan, a powerful SUV, or a sporty coupe, we have something for everyone."
+    },
+    "contact": {
+        "title": "Contact Us",
+        "visit": "Visit Our Showroom",
+        "sales": "Sales Department",
+        "message": "Send us a message",
+        "name": "Your Name",
+        "email": "Your Email",
+        "msg_placeholder": "Message"
+    },
+    "home": {
+        "contact_us": "Contact Us",
+        "why_choose_us": "Why Choose AutoMotive",
+        "why_subtitle": "We provide the best service and experience for our customers.",
+        "premium_quality": "Premium Quality",
+        "premium_desc": "All our vehicles undergo rigorous inspection and certification.",
+        "fast_service": "Fast Service",
+        "fast_desc": "Quick processing and delivery of your dream car.",
+        "best_prices": "Best Prices",
+        "best_prices_desc": "Competitive pricing and transparent deals with no hidden fees.",
+        "featured_vehicles": "Featured Vehicles",
+        "featured_subtitle": "Check out our latest arrivals.",
+        "no_cars": "No cars available at the moment.",
+        "view_all": "View All Cars"
+    },
+    "footer": {
+        "tagline": "Premium cars for premium drivers.",
+        "links": "Quick Links",
+        "legal": "Legal",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service",
+        "rights": "All rights reserved."
+    }
+}
