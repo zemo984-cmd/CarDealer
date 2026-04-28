@@ -68,5 +68,27 @@
         "privacy": "Privacy Policy",
         "terms": "Terms of Service",
         "rights": "All rights reserved."
+    },
+    "privacy_page": {
+        "title": "Privacy Policy",
+        "effective_date": "Effective Date:",
+        "intro": "Welcome to AutoMotive. We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about this privacy notice, or our practices with regards to your personal information, please contact us.",
+        "section1_title": "1. Information We Collect",
+        "section1_desc": "We collect personal information that you voluntarily provide to us when you register on the Services, express an interest in obtaining information about us or our products and Services, when you participate in activities on the Services or otherwise when you contact us.",
+        "section2_title": "2. How We Use Your Information",
+        "section2_desc": "We use personal information collected via our Services for a variety of business purposes described below. We process your personal information for these purposes in reliance on our legitimate business interests, in order to enter into or perform a contract with you, with your consent, and/or for compliance with our legal obligations.",
+        "section3_title": "3. Will Your Information Be Shared?",
+        "section3_desc": "We only share information with your consent, to comply with laws, to provide you with services, to protect your rights, or to fulfill business obligations."
+    },
+    "terms_page": {
+        "title": "Terms of Service",
+        "effective_date": "Effective Date:",
+        "intro": "These Terms of Service constitute a legally binding agreement made between you, whether personally or on behalf of an entity (“you”) and AutoMotive, concerning your access to and use of the website as well as any other media form, media channel, mobile website or mobile application related, linked, or otherwise connected thereto (collectively, the “Site”).",
+        "section1_title": "1. Agreement to Terms",
+        "section1_desc": "By accessing the Site, you agree that you have read, understood, and agreed to be bound by all of these Terms of Service. If you do not agree with all of these Terms of Service, then you are expressly prohibited from using the Site and you must discontinue use immediately.",
+        "section2_title": "2. User Representations",
+        "section2_desc": "By using the Site, you represent and warrant that: (1) all registration information you submit will be true, accurate, current, and complete; (2) you will maintain the accuracy of such information and promptly update such registration information as necessary; (3) you have the legal capacity and you agree to comply with these Terms of Service.",
+        "section3_title": "3. Prohibited Activities",
+        "section3_desc": "You may not access or use the Site for any purpose other than that for which we make the Site available. The Site may not be used in connection with any commercial endeavors except those that are specifically endorsed or approved by us."
     }
 }

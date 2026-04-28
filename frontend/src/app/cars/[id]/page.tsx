@@ -1,9 +1,10 @@
-import { getCarById } from "@/app/actions/cars";
+                                                                                                                                                                                                                                                                                                                                                         import { getCarById } from "@/app/actions/cars";
 import { Button } from "@/components/ui/Button/Button";
 import QuickActions from "@/components/ui/QuickActions/QuickActions";
 import Link from "next/link";
 import styles from "./page.module.css";
 import { notFound } from "next/navigation";
+import { auth } from "@/auth";
 
 export const dynamic = 'force-dynamic';
 
@@ -13,6 +14,7 @@ export default async function CarDetailsPage({
     params: Promise<{ id: string }>;
 }) {
     const { id } = await params;
+    const session = await auth();
     const { data: car, error } = await getCarById(Number(id));
 
     if (error || !car) {
@@ -71,11 +73,20 @@ export default async function CarDetailsPage({
                     </div>
 
                     <div className={styles.actions}>
-                        <Link href={`/dashboard/bookings/new?carId=${car.id}`} style={{ width: '100%' }}>
-                            <Button size="lg" fullWidth>Book Now</Button>
-                        </Link>
+                        {session ? (
+                            <Link href={`/dashboard/bookings/new?carId=${car.id}`} style={{ width: '100%' }}>
+                                <Button size="lg" fullWidth>Book Now</Button>
+                            </Link>
+                        ) : (
+                            <Link href={`/login?callbackUrl=${encodeURIComponent(`/dashboard/bookings/new?carId=${car.id}`)}`} style={{ width: '100%' }}>
+                                <Button size="lg" fullWidth>Login to Book</Button>
+                            </Link>
+                        )}
+                        
                         {car.status === 'AVAILABLE' && (
-                            <Button size="lg" variant="secondary" fullWidth>Book Test Drive</Button>
+                            <Link href="/contact" style={{ width: '100%' }}>
+                                <Button size="lg" variant="outline" fullWidth>تواصل معنا (Contact Us)</Button>
+                            </Link>
                         )}
                         <QuickActions />
                     </div>

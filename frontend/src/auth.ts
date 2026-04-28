@@ -20,10 +20,18 @@ export const authConfig = {
 
                 if (!user || !user.password) return null;
 
-                const isPasswordValid = await bcrypt.compare(
-                    credentials.password as string,
-                    user.password
-                );
+                const isPasswordHash = user.password.startsWith('$2');
+                let isPasswordValid = false;
+
+                if (isPasswordHash) {
+                    isPasswordValid = await bcrypt.compare(
+                        credentials.password as string,
+                        user.password
+                    );
+                } else {
+                    // Fallback for plain text passwords in development/seeding
+                    isPasswordValid = credentials.password === user.password;
+                }
 
                 if (isPasswordValid) {
                     return {

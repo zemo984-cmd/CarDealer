@@ -89,3 +89,19 @@ button {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
 }
+
+/* Color Blind Mode (High Contrast) */
+.color-blind-mode {
+  --primary: #0000ff;
+  --primary-foreground: #ffffff;
+  --destructive: #ff0000;
+  --accent: #ffff00;
+  --accent-foreground: #000000;
+  --muted-foreground: #333333;
+}
+.color-blind-mode[data-theme='dark'] {
+  --primary: #5555ff;
+  --destructive: #ff5555;
+  --accent: #ffff55;
+  --muted-foreground: #cccccc;
+}

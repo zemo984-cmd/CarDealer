@@ -2,6 +2,7 @@
    CAR DEALER SYSTEM - DATABASE EXPORT
    COMPATIBLE SCHEMA + SEED DATA
    Matches 'prisma/schema.prisma' perfectly
+   Updated: Phase 1 - New Models Added
    ====================================== */
 
 SET FOREIGN_KEY_CHECKS = 0;
@@ -10,21 +11,24 @@ SET FOREIGN_KEY_CHECKS = 0;
 CREATE DATABASE IF NOT EXISTS `cardealer`;
 USE `cardealer`;
 
--- 2. Drop Existing Tables
-DROP TABLE IF EXISTS
-  `tradeinrequest`,
-  `invoice`,
-  `order`,
-  `bill`,
-  `booking`,
-  `chauffeurbata`,
-  `chauffeur`,
-  `car`,
-  `vehicletype`,
-  `user`,
-  `discount`,
-  `branch`,
-  `_prisma_migrations`;
+-- 2. Drop Existing Tables (in reverse dependency order)
+DROP TABLE IF EXISTS `activitylog`;
+DROP TABLE IF EXISTS `notification`;
+DROP TABLE IF EXISTS `message`;
+DROP TABLE IF EXISTS `systemsetting`;
+DROP TABLE IF EXISTS `tradeinrequest`;
+DROP TABLE IF EXISTS `invoice`;
+DROP TABLE IF EXISTS `order`;
+DROP TABLE IF EXISTS `bill`;
+DROP TABLE IF EXISTS `booking`;
+DROP TABLE IF EXISTS `chauffeurbata`;
+DROP TABLE IF EXISTS `chauffeur`;
+DROP TABLE IF EXISTS `car`;
+DROP TABLE IF EXISTS `vehicletype`;
+DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS `discount`;
+DROP TABLE IF EXISTS `branch`;
+DROP TABLE IF EXISTS `_prisma_migrations`;
 
 -- =========================
 -- 3. CREATE TABLES
@@ -38,7 +42,7 @@ CREATE TABLE `branch` (
     `phone` VARCHAR(191)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- user
+-- user (UPDATED: added profileImage, notificationsEnabled, colorBlindMode, dashboardColor, resetAttempts)
 CREATE TABLE `user` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `email` VARCHAR(191) NOT NULL UNIQUE,
@@ -53,6 +57,11 @@ CREATE TABLE `user` (
     `branchId` INT,
     `resetToken` VARCHAR(255),
     `resetTokenExpiry` DATETIME(0),
+    `resetAttempts` INT NOT NULL DEFAULT 0,
+    `profileImage` TEXT,
+    `notificationsEnabled` BOOLEAN NOT NULL DEFAULT TRUE,
+    `colorBlindMode` BOOLEAN NOT NULL DEFAULT FALSE,
+    `dashboardColor` VARCHAR(191) DEFAULT '#ffffff',
     `createdAt` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updatedAt` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
     CONSTRAINT `User_branchId_fkey` FOREIGN KEY (`branchId`) REFERENCES `branch`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
@@ -190,6 +199,52 @@ CREATE TABLE `tradeinrequest` (
     CONSTRAINT `TradeInRequest_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- =========================
+-- NEW TABLES (Phase 1)
+-- =========================
+
+-- message (نظام المراسلة بين الزبون والآدمن)
+CREATE TABLE `message` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `senderId` INT NOT NULL,
+    `receiverId` INT NOT NULL,
+    `content` TEXT NOT NULL,
+    `isRead` BOOLEAN NOT NULL DEFAULT FALSE,
+    `createdAt` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    CONSTRAINT `Message_senderId_fkey` FOREIGN KEY (`senderId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT `Message_receiverId_fkey` FOREIGN KEY (`receiverId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- notification (الاشعارات الذكية للزبون)
+CREATE TABLE `notification` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `userId` INT NOT NULL,
+    `title` VARCHAR(255) NOT NULL,
+    `message` TEXT NOT NULL,
+    `isRead` BOOLEAN NOT NULL DEFAULT FALSE,
+    `createdAt` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    CONSTRAINT `Notification_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- systemsetting (اعدادات النظام: الوان الموقع، نسبة الضريبة)
+CREATE TABLE `systemsetting` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `key` VARCHAR(255) NOT NULL UNIQUE,
+    `value` TEXT NOT NULL,
+    `description` VARCHAR(255),
+    `updatedAt` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- activitylog (سجل النشاطات)
+CREATE TABLE `activitylog` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `userId` INT,
+    `action` VARCHAR(255) NOT NULL,
+    `details` TEXT,
+    `createdAt` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    CONSTRAINT `ActivityLog_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 
 -- =========================
 -- 4. SEED DATA
@@ -200,11 +255,13 @@ INSERT INTO `branch` (`id`, `name`, `address`, `phone`) VALUES
 (1, 'Main Branch', 'Downtown City, Amman', '079-000-0000'),
 (2, 'North Branch', 'Irbid City', '02-700-0000');
 
--- user (Password is 'admin123' hashed simplified for export)
-INSERT INTO `user` (`id`, `email`, `password`, `name`, `role`, `branchId`) VALUES
-(1, 'admin@dealer.com', '$2b$10$vI8p7FpND3B7f8D.0O1Q0.hL/9VpC1YyJ/3K0YI4yY5Z.O1Q0.hL/', 'Admin Account', 'ADMIN', 1),
-(2, 'employee@dealer.com', '$2b$10$vI8p7FpND3B7f8D.0O1Q0.hL/9VpC1YyJ/3K0YI4yY5Z.O1Q0.hL/', 'Staff Member', 'EMPLOYEE', 1),
-(3, 'client@dealer.com', '$2b$10$vI8p7FpND3B7f8D.0O1Q0.hL/9VpC1YyJ/3K0YI4yY5Z.O1Q0.hL/', 'Sample Client', 'CLIENT', NULL);
+-- user (Password is 'admin123' hashed for export)
+INSERT INTO `user` (`id`, `email`, `password`, `name`, `role`, `branchId`, `notificationsEnabled`, `colorBlindMode`, `dashboardColor`) VALUES
+(1, 'admin@dealer.com', '$2b$10$vI8p7FpND3B7f8D.0O1Q0.hL/9VpC1YyJ/3K0YI4yY5Z.O1Q0.hL/', 'Admin Account', 'ADMIN', 1, TRUE, FALSE, '#ffffff'),
+(2, 'employee@dealer.com', '$2b$10$vI8p7FpND3B7f8D.0O1Q0.hL/9VpC1YyJ/3K0YI4yY5Z.O1Q0.hL/', 'Staff Member', 'EMPLOYEE', 1, TRUE, FALSE, '#ffffff'),
+(3, 'client@dealer.com', '$2b$10$vI8p7FpND3B7f8D.0O1Q0.hL/9VpC1YyJ/3K0YI4yY5Z.O1Q0.hL/', 'Sample Client', 'CLIENT', NULL, TRUE, FALSE, '#ffffff'),
+(4, 'zemo984@gmail.com', 'bmw series 5', 'Zemo Admin', 'ADMIN', 1, TRUE, FALSE, '#ffffff'),
+(5, 'customer1@example.com', 'customer123', 'Customer One', 'CLIENT', NULL, TRUE, FALSE, '#ffffff');
 
 -- vehicletype
 INSERT INTO `vehicletype` (`id`, `typeName`, `securityDeposit`, `costPerMile`) VALUES
@@ -220,6 +277,12 @@ INSERT INTO `car` (`id`, `make`, `model`, `year`, `price`, `regNumber`, `mileage
 (4, 'Audi', 'A6', 2024, 60000.00, 'AU-A6-2024', 20, 'New', 'AVAILABLE', 1, '/images/cars/audi-a6.png', 'SALE'),
 (5, 'Skoda', 'Octavia', 2023, 28000.00, 'SK-OCT-2023', 100, 'Excellent', 'AVAILABLE', 1, '/images/cars/skoda-octavia.png', 'SALE'),
 (6, 'Mercedes', 'G-Wagon', 2024, 180000.00, 'MB-G63-2024', 0, 'New', 'AVAILABLE', 2, '/images/cars/g-wagon.png', 'SALE');
+
+-- systemsetting seed (اعدادات افتراضية: ضريبة 10%، لون الموقع الاساسي)
+INSERT INTO `systemsetting` (`key`, `value`, `description`) VALUES
+('tax_rate', '10', 'نسبة الضريبة المطبقة على الفواتير (%)'),
+('primary_color', '#C8A96E', 'اللون الاساسي للموقع'),
+('secondary_color', '#1a1a2e', 'اللون الثانوي للموقع');
 
 SET FOREIGN_KEY_CHECKS = 1;
 

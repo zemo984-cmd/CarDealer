@@ -161,18 +161,27 @@ model user {
   dateOfBirth      DateTime?        @db.DateTime(0)
   occupation       String?          @db.VarChar(255)
   address          String?          @db.VarChar(255)
-  role             user_role        @default(CLIENT)
-  status           String           @default("Active")
-  branchId         Int?
-  resetToken       String?          @db.VarChar(255)
-  resetTokenExpiry DateTime?        @db.DateTime(0)
-  createdAt        DateTime         @default(now()) @db.DateTime(0)
-  updatedAt        DateTime         @default(now()) @db.DateTime(0)
-  booking          booking[]
-  invoice          invoice[]
-  order            order[]
-  tradeinrequest   tradeinrequest[]
-  branch           branch?          @relation(fields: [branchId], references: [id], map: "User_branchId_fkey")
+  role                 user_role        @default(CLIENT)
+  status               String           @default("Active")
+  branchId             Int?
+  resetToken           String?          @db.VarChar(255)
+  resetTokenExpiry     DateTime?        @db.DateTime(0)
+  resetAttempts        Int              @default(0)
+  profileImage         String?          @db.Text
+  notificationsEnabled Boolean          @default(true)
+  colorBlindMode       Boolean          @default(false)
+  dashboardColor       String?          @default("#ffffff")
+  createdAt            DateTime         @default(now()) @db.DateTime(0)
+  updatedAt            DateTime         @default(now()) @db.DateTime(0)
+  booking              booking[]
+  invoice              invoice[]
+  order                order[]
+  tradeinrequest       tradeinrequest[]
+  branch               branch?          @relation(fields: [branchId], references: [id], map: "User_branchId_fkey")
+  messagesSent         message[]        @relation("SentMessages")
+  messagesReceived     message[]        @relation("ReceivedMessages")
+  notifications        notification[]
+  activityLogs         activitylog[]
 
   @@index([branchId], map: "User_branchId_fkey")
 }
@@ -219,4 +228,49 @@ enum car_status {
   MAINTENANCE
   SOLD
   RESERVED
+}
+
+model message {
+  id         Int      @id @default(autoincrement())
+  senderId   Int
+  receiverId Int
+  content    String   @db.Text
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now()) @db.DateTime(0)
+  sender     user     @relation("SentMessages", fields: [senderId], references: [id], map: "Message_senderId_fkey")
+  receiver   user     @relation("ReceivedMessages", fields: [receiverId], references: [id], map: "Message_receiverId_fkey")
+
+  @@index([senderId], map: "Message_senderId_fkey")
+  @@index([receiverId], map: "Message_receiverId_fkey")
+}
+
+model notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  title     String   @db.VarChar(255)
+  message   String   @db.Text
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now()) @db.DateTime(0)
+  user      user     @relation(fields: [userId], references: [id], map: "Notification_userId_fkey")
+
+  @@index([userId], map: "Notification_userId_fkey")
+}
+
+model systemsetting {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique @db.VarChar(255)
+  value       String   @db.Text
+  description String?  @db.VarChar(255)
+  updatedAt   DateTime @default(now()) @db.DateTime(0)
+}
+
+model activitylog {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  action    String   @db.VarChar(255)
+  details   String?  @db.Text
+  createdAt DateTime @default(now()) @db.DateTime(0)
+  user      user?    @relation(fields: [userId], references: [id], map: "ActivityLog_userId_fkey")
+
+  @@index([userId], map: "ActivityLog_userId_fkey")
 }

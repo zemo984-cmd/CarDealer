@@ -1,5 +1,5 @@
 .sidebar {
-    width: 250px;
+    width: 100%;
     background-color: var(--card);
     border-right: 1px solid var(--border);
     height: 100vh;

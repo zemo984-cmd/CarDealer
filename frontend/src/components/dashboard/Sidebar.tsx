@@ -15,7 +15,8 @@ import {
     Tag,
     TicketPercent,
     ReceiptText,
-    LogOut
+    LogOut,
+    MessageCircle
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
@@ -28,6 +29,7 @@ const menuItems = [
     { name: 'Billing', href: '/dashboard/billing', icon: ReceiptText, roles: ['ADMIN', 'CLIENT'] },
     { name: 'Branches', href: '/dashboard/branches', icon: Building2, roles: ['ADMIN'] },
     { name: 'Discounts', href: '/dashboard/discounts', icon: TicketPercent, roles: ['ADMIN'] },
+    { name: 'Messages', href: '/dashboard/messages', icon: MessageCircle, roles: ['ADMIN', 'CLIENT'] },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings, roles: ['ADMIN', 'CLIENT'] },
 ];
 

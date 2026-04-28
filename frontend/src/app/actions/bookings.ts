@@ -35,15 +35,36 @@ export async function createBooking(data: {
             data: { status: 'BOOKED' }
         });
 
+        // Fetch Tax Rate directly from SystemSetting
+        const taxSetting = await prisma.systemsetting.findUnique({
+            where: { key: 'TAX_RATE' }
+        });
+        const taxRate = taxSetting ? Number(taxSetting.value) : 15;
+        const taxAmountCalc = Number(data.amount) * (taxRate / 100);
+        const balanceCalc = Number(data.amount) + taxAmountCalc;
+
         // Automatically generate a bill
         await createBill({
             bookingId: booking.id,
-            totalAmount: data.amount,
+            totalAmount: Number(data.amount) + taxAmountCalc, // Base + Tax
             discountAmount: 0, // Should be calculated if discountId exists
-            taxAmount: Number(data.amount) * 0.15, // Example 15% tax
+            taxAmount: taxAmountCalc,
             advanceAmount: 0,
-            balanceAmount: Number(data.amount) * 1.15,
+            balanceAmount: balanceCalc,
         });
+
+        // Notify admins
+        const admins = await prisma.user.findMany({ where: { role: 'ADMIN', notificationsEnabled: true } });
+        if (admins.length > 0) {
+            const customer = await prisma.user.findUnique({ where: { id: data.customerId } });
+            await prisma.notification.createMany({
+                data: admins.map(admin => ({
+                    userId: admin.id,
+                    title: "حجز جديد",
+                    message: `قام العميل ${customer?.name || customer?.email} بإجراء حجز جديد للسيارة رقم ${data.carId}`
+                }))
+            });
+        }
 
         revalidatePath('/dashboard/bookings');
         return { success: true, data: booking };

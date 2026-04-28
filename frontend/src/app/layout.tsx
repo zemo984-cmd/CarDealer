@@ -21,15 +21,32 @@ export const metadata: Metadata = {
 };
 
 import { TranslationProvider } from "@/context/TranslationContext";
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
 
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+  
+  let dbUser = null;
+  if (session?.user?.email) {
+    dbUser = await prisma.user.findUnique({
+      where: { email: session.user.email }
+    });
+  }
+
+  // Combine session user with db fields
+  const user = dbUser ? { ...session?.user, image: dbUser.profileImage, colorBlindMode: dbUser.colorBlindMode } : session?.user;
+
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+      <body 
+        className={`${geistSans.variable} ${geistMono.variable} ${dbUser?.colorBlindMode ? 'color-blind-mode' : ''}`} 
+        suppressHydrationWarning
+      >
         <script
           dangerouslySetInnerHTML={{
             __html: `!function(){try{var e=localStorage.getItem("theme");if("light"===e){document.documentElement.setAttribute("data-theme","light")}else{document.documentElement.setAttribute("data-theme","dark")}}catch(e){}}();`,
@@ -38,7 +55,7 @@ export default async function RootLayout({
         <TranslationProvider>
           <ThemeProvider>
             <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-              <Navbar user={undefined} />
+              <Navbar user={user} />
               <main style={{ flex: 1 }}>
                 {children}
               </main>

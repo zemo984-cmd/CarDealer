@@ -9,9 +9,11 @@ import { useRouter } from 'next/navigation';
 interface BookingFormProps {
     car: any;
     chauffeurs: any[];
+    customerId: number;
+    taxRate: number;
 }
 
-const BookingFormClient: React.FC<BookingFormProps> = ({ car, chauffeurs }) => {
+const BookingFormClient: React.FC<BookingFormProps> = ({ car, chauffeurs, customerId, taxRate }) => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
@@ -21,7 +23,7 @@ const BookingFormClient: React.FC<BookingFormProps> = ({ car, chauffeurs }) => {
     });
 
     const baseAmount = Number(car.price);
-    const tax = baseAmount * 0.15;
+    const tax = baseAmount * (taxRate / 100);
     const totalAmount = baseAmount + tax;
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -29,17 +31,18 @@ const BookingFormClient: React.FC<BookingFormProps> = ({ car, chauffeurs }) => {
         setLoading(true);
 
         const result = await createBooking({
-            customerId: 1, // Placeholder: in a real app, this would be the logged-in user's ID
+            customerId,
             carId: car.id,
             driveOption: formData.driveOption,
             meterReading: Number(formData.meterReading),
             amount: baseAmount,
             securityDeposit: 500, // Placeholder
             chauffeurId: formData.chauffeurId ? Number(formData.chauffeurId) : undefined,
+            // Pass standard tax calculation elements to the backend action if needed, or backend recalculates them
         });
 
         if (result.success) {
-            router.push('/dashboard/sales');
+            router.push('/dashboard/billing'); 
         } else {
             alert(result.error);
         }
@@ -92,15 +95,15 @@ const BookingFormClient: React.FC<BookingFormProps> = ({ car, chauffeurs }) => {
                 <h3>Summary</h3>
                 <div className={styles.row}>
                     <span>Base Amount:</span>
-                    <span>${baseAmount.toLocaleString()}</span>
+                    <span>${baseAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
                 <div className={styles.row}>
-                    <span>Tax (15%):</span>
-                    <span>${tax.toLocaleString()}</span>
+                    <span>Tax ({taxRate}%):</span>
+                    <span>${tax.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
                 <div className={styles.total}>
                     <span>Total:</span>
-                    <span>${totalAmount.toLocaleString()}</span>
+                    <span>${totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
             </div>
 

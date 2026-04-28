@@ -1,9 +1,8 @@
-import { Button } from "@/components/ui/Button/Button";
 import styles from "../cars/new/page.module.css";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { updateSettings } from "@/app/actions/settings";
 import { redirect } from "next/navigation";
+import { ProfileForm, CustomerSettingsForm, AdminSettingsForm } from "./SettingsForms";
 
 export default async function SettingsPage() {
     const session = await auth();
@@ -17,43 +16,27 @@ export default async function SettingsPage() {
 
     if (!user) return <div>User not found</div>;
 
+    const isAdmin = user.role === 'ADMIN' || user.role === 'EMPLOYEE';
+    const settings = isAdmin ? await prisma.systemsetting.findMany() : [];
+
     return (
-        <div className={styles.container}>
-            <h1 className={styles.title}>Settings</h1>
+        <div className={styles.container} dir="rtl">
+            <h1 className={styles.title}>الإعدادات الشاملة</h1>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                {/* 1. Basic Profile Form for everyone */}
+                <ProfileForm user={user} />
 
-            <form action={updateSettings as any} className={styles.form}>
-                <h3 style={{ marginBottom: '1rem', color: 'var(--foreground)' }}>Profile Information</h3>
-                <div className={styles.grid}>
-                    <div className={styles.group}>
-                        <label>Full Name</label>
-                        <input name="name" defaultValue={user.name || ''} className={styles.input} />
-                    </div>
-                    <div className={styles.group}>
-                        <label>Email (Read Only)</label>
-                        <input defaultValue={user.email} className={styles.input} disabled style={{ opacity: 0.7 }} />
-                    </div>
-                    <div className={styles.group}>
-                        <label>Address</label>
-                        <input name="address" defaultValue={user.address || ''} className={styles.input} />
-                    </div>
-                    <div className={styles.group}>
-                        <label>Occupation</label>
-                        <input name="occupation" defaultValue={user.occupation || ''} className={styles.input} />
-                    </div>
-                </div>
+                {/* 2. Customer Settings for CLIENTs */}
+                {user.role === 'CLIENT' && (
+                    <CustomerSettingsForm user={user} />
+                )}
 
-                <div className={styles.fullWidth} style={{ marginTop: '2rem' }}>
-                    <h3 style={{ marginBottom: '1rem', color: 'var(--foreground)' }}>Notifications (Coming Soon)</h3>
-                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                        <input type="checkbox" id="emailNotif" defaultChecked disabled />
-                        <label htmlFor="emailNotif" style={{ margin: 0, opacity: 0.7 }}>Email Notifications for New Orders</label>
-                    </div>
-                </div>
-
-                <div className={styles.actions}>
-                    <Button size="lg" type="submit">Save Changes</Button>
-                </div>
-            </form>
+                {/* 3. System Admin Settings for ADMIN/EMPLOYEE */}
+                {isAdmin && (
+                    <AdminSettingsForm settings={settings} />
+                )}
+            </div>
         </div>
     );
 }

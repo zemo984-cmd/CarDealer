@@ -1,7 +1,7 @@
-import Sidebar from '@/components/dashboard/Sidebar';
-import Header from '@/components/dashboard/Header';
+import DashboardClientLayout from '@/components/dashboard/DashboardClientLayout';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
+import { prisma } from '@/lib/prisma';
 
 export default async function DashboardLayout({
     children,
@@ -14,15 +14,28 @@ export default async function DashboardLayout({
         redirect('/login');
     }
 
+    let userDb = null;
+    let unreadCount = 0;
+    if (session?.user?.email) {
+        userDb = await prisma.user.findUnique({
+            where: { email: session.user.email }
+        });
+        if (userDb) {
+            unreadCount = await prisma.notification.count({
+                where: { userId: userDb.id, isRead: false }
+            });
+        }
+    }
+
     return (
-        <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: 'var(--background)' }}>
-            <Sidebar role={(session.user as any).role} />
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <Header userName={session.user?.name || session.user?.email || 'User'} />
-                <main style={{ flex: 1, padding: '2rem', overflowY: 'auto', backgroundColor: 'var(--secondary)' }}>
-                    {children}
-                </main>
-            </div>
-        </div>
+        <DashboardClientLayout
+            userName={session.user?.name || session.user?.email || 'User'}
+            role={(session.user as any).role}
+            profileImage={userDb?.profileImage}
+            dashboardColor={userDb?.dashboardColor || undefined}
+            unreadNotificationsCount={unreadCount}
+        >
+            {children}
+        </DashboardClientLayout>
     );
 }
