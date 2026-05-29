@@ -1,0 +1,122 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--foreground);
+}
+
+.tableContainer {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.table th {
+    padding: 1rem;
+    background-color: var(--secondary);
+    font-weight: 600;
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--foreground);
+    vertical-align: middle;
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.imagePlaceholder {
+    width: 48px;
+    height: 48px;
+    background-color: var(--muted);
+    border-radius: 0.375rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    overflow: hidden;
+}
+
+.imagePlaceholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.carName {
+    font-weight: 600;
+}
+
+.carId {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+}
+
+.price {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.available {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.sold {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.reserved {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.purchase {
+    background-color: rgba(37, 99, 235, 0.1);
+    color: #2563eb;
+}
+
+.booking {
+    background-color: rgba(168, 85, 247, 0.1);
+    color: #a855f7;
+}
+
+.installment {
+    background-color: rgba(234, 179, 8, 0.1);
+    color: #eab308;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}

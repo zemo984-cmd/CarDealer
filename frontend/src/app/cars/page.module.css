@@ -1,0 +1,275 @@
+.page {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+    width: 280px;
+    flex-shrink: 0;
+}
+
+/* ── Main ── */
+.main {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+/* ── Page Header ── */
+.pageHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.heading {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--foreground);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin: 0;
+}
+
+.subheading {
+    font-size: 0.9rem;
+    color: var(--muted-foreground);
+    margin-top: 0.35rem;
+}
+
+.clearBtn {
+    flex-shrink: 0;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+    padding: 0.45rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    white-space: nowrap;
+}
+
+.clearBtn:hover {
+    background: rgba(239, 68, 68, 0.22);
+}
+
+/* ── Brand Bar ── */
+.brandBar {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.75rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+    -webkit-overflow-scrolling: touch;
+}
+
+.brandBar::-webkit-scrollbar {
+    height: 4px;
+}
+.brandBar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.brandBar::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 10px;
+}
+.brandBar::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+.brandButton {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--card);
+    color: var(--foreground);
+    border: 1px solid var(--border);
+    padding: 0.45rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.brandButton:hover {
+    background: var(--secondary);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.activeBrand {
+    background: var(--primary) !important;
+    color: #fff !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+    font-weight: 700;
+}
+
+.brandLogo {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    flex-shrink: 0;
+    border-radius: 2px;
+}
+
+/* ── Car Grid ── */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 1.5rem;
+    transition: opacity 0.15s ease;
+}
+
+.gridFetching {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.gridItem {
+    display: flex;
+}
+
+.gridItem > * {
+    flex: 1;
+}
+
+/* ── Skeleton Loader ── */
+.loadingGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 1.5rem;
+}
+
+.skeleton {
+    border-radius: 1rem;
+    overflow: hidden;
+    background: var(--card);
+    border: 1px solid var(--border);
+}
+
+.skeletonImg {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: linear-gradient(90deg, var(--muted) 25%, var(--secondary) 50%, var(--muted) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.skeletonContent {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.skeletonLine {
+    height: 14px;
+    border-radius: 0.5rem;
+    background: linear-gradient(90deg, var(--muted) 25%, var(--secondary) 50%, var(--muted) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ── No Results ── */
+.noResults {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 5rem 2rem;
+    text-align: center;
+    color: var(--muted-foreground);
+    background: var(--card);
+    border-radius: 1rem;
+    border: 1px dashed var(--border);
+}
+
+.noResults p {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.resetLink {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--primary);
+    padding: 0.5rem 1.25rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.resetLink:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: var(--primary);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 250px;
+    }
+    .grid, .loadingGrid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .page {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+
+    .heading {
+        font-size: 1.5rem;
+    }
+
+    .pageHeader {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .grid, .loadingGrid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+    }
+
+    .brandButton {
+        padding: 0.4rem 0.85rem;
+        font-size: 0.78rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .grid, .loadingGrid {
+        grid-template-columns: 1fr;
+    }
+}
